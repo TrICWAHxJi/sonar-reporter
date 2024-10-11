@@ -1,3 +1,5 @@
-./venv
+.idea/
+venv/
+
 report.html
 report.sarif
