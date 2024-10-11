@@ -1,0 +1,8 @@
+[sonar]
+url = "http://localhost:9000"
+token = "squ_d7d5b8246433b033fcbb6ad3ddb07e6cd48722c5"
+project_key = "sandbox"
+
+[project]
+# Полный путь к проекту
+src = "/home/etipsum/Projects/sonarqube/sandbox"
