@@ -7,7 +7,7 @@ from collections import defaultdict
 from urllib.parse import urlparse
 
 import toml
-from jinja2 import Environment, FileSystemLoader
+from mako.template import Template
 
 
 def strip_scheme(url: str) -> str:
@@ -100,8 +100,7 @@ def create_html_report_with_aggregated_regions_jinja(results, root_dir=None):
 
         files_with_highlighting[file_path] = highlighted_content
 
-    env = Environment(loader=FileSystemLoader(searchpath="."))
-    template = env.get_template("template.html")
+    template = Template(filename='template.html.mako')
 
     html_report = template.render(files=files_with_highlighting)
 

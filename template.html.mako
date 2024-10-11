@@ -32,14 +32,14 @@
     <div class="container">
         <h1 class="center-align">Sonar Report</h1>
         <ul class="collection">
-            {% for file_path, highlighted_content in files.items() %}
+            % for file_path, highlighted_content in files.items():
             <li class="collection-item">
                 <details>
-                    <summary class="collection-header">File: {{ file_path }}</summary>
-                    <pre><code class="language-java">{{ highlighted_content | safe }}</code></pre>
+                    <summary class="collection-header">${file_path}</summary>
+                    <pre><code class="language-python">${highlighted_content | n}</code></pre>
                 </details>
             </li>
-            {% endfor %}
+            % endfor
         </ul>
     </div>
 </body>
