@@ -36,7 +36,7 @@
             <li class="collection-item">
                 <details>
                     <summary class="collection-header">${file_path}</summary>
-                    <pre><code class="language-python">${highlighted_content | n}</code></pre>
+                    <pre><code class="language-java">${highlighted_content | n}</code></pre>
                 </details>
             </li>
             % endfor

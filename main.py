@@ -49,10 +49,19 @@ def aggregate_regions_by_file(results):
 
 
 def highlight_region_in_line(line, start_col, end_col=None):
+    before_highlight = line[:start_col]
     if end_col:
-        return line[:start_col] + '<span class="highlighted">' + line[start_col:end_col] + '</span>' + line[end_col:]
+        highlighted_part = line[start_col:end_col]
+        after_highlight = line[end_col:]
     else:
-        return line[:start_col] + '<span class="highlighted">' + line[start_col:] + '</span>'
+        highlighted_part = line[start_col:]
+        after_highlight = ""
+
+    before_highlight = html.escape(before_highlight)
+    highlighted_part = f'<span class="highlighted">{html.escape(highlighted_part)}</span>'
+    after_highlight = html.escape(after_highlight)
+
+    return before_highlight + highlighted_part + after_highlight
 
 
 def apply_highlighting_to_file_content(file_content, regions):
@@ -64,34 +73,31 @@ def apply_highlighting_to_file_content(file_content, regions):
                            region['startLine'] <= idx <= region.get('endLine', region['startLine'])]
 
         if regions_in_line:
-            escaped_line = f'-{idx: <4}{html.escape(line)}'
+            escaped_line = ""
             for region in regions_in_line:
                 start_line = region['startLine']
                 end_line = region.get('endLine', start_line)
                 start_column = region.get('startColumn', 1) if idx == start_line else 1
                 end_column = region.get('endColumn', None) if idx == end_line else None
 
-                start_column += 5
-                if end_column:
-                    end_column += 5
-
                 if idx == start_line and idx == end_line:
-                    escaped_line = highlight_region_in_line(escaped_line, start_column, end_column)
+                    escaped_line = highlight_region_in_line(line, start_column, end_column)
                 elif idx == start_line:
-                    escaped_line = highlight_region_in_line(escaped_line, start_column)
+                    escaped_line = highlight_region_in_line(line, start_column)
                 elif idx == end_line:
-                    escaped_line = highlight_region_in_line(escaped_line, 1, end_column)
+                    escaped_line = highlight_region_in_line(line, 1, end_column)
                 else:
-                    escaped_line = f'<span class="highlighted">{escaped_line}</span>'
+                    escaped_line = f'<span class="highlighted">{html.escape(line)}</span>'
+            escaped_line = f'-{idx: <4}{escaped_line}'
         else:
-            escaped_line = f"{idx: <5}" + html.escape(line)
+            escaped_line = f'{idx: <5}' + html.escape(line)
 
         highlighted_content += escaped_line + "\n"
 
     return highlighted_content
 
 
-def create_html_report_with_aggregated_regions_jinja(results, root_dir=None):
+def create_html_report_with_aggregated_regions(results, root_dir=None):
     file_regions = aggregate_regions_by_file(results)
 
     files_with_highlighting = {}
@@ -136,7 +142,7 @@ results = filter_results(results)
 
 root_directory = config["project"]["src"]
 
-html_report_with_columns = create_html_report_with_aggregated_regions_jinja(results, root_dir=root_directory)
+html_report_with_columns = create_html_report_with_aggregated_regions(results, root_dir=root_directory)
 
 output_file_with_columns = "./report.html"
 with open(output_file_with_columns, 'w', encoding='utf-8') as f:
