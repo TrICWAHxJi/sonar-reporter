@@ -17,7 +17,7 @@ def filter_results(results):
         properties = result.get('properties', {})
         status = properties.get("status")
 
-        if status != 'FIXED':
+        if status != 'CLOSED':
             filtered_results.append(result)
 
     return filtered_results
