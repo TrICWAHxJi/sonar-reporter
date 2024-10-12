@@ -10,6 +10,18 @@ import toml
 from mako.template import Template
 
 
+def filter_results(results):
+    filtered_results = []
+
+    for result in results:
+        properties = result.get('properties', {})
+        status = properties.get("status")
+
+        if status != 'FIXED':
+            filtered_results.append(result)
+
+    return filtered_results
+
 def strip_scheme(url: str) -> str:
     schemaless = urlparse(url)._replace(scheme='').geturl()
     return schemaless[2:] if schemaless.startswith("//") else schemaless
@@ -120,6 +132,7 @@ with open(sarif_path, 'r', encoding='utf-8') as f:
 
 run = sarif_data['runs'][0]
 results = run['results']
+results = filter_results(results)
 
 root_directory = config["project"]["src"]
 
